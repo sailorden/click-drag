@@ -35,13 +35,25 @@ arrayImage.forEach(function(fileName) {
 var hammer_options = {};
 $('img')
     .hammer(hammer_options)
-    .on('drag', function(ev) { 
+    .on('dragend', function(ev) { 
         console.log(ev);
         currentX = ev.gesture.center.pageX;
         currentY = ev.gesture.center.pageY;
         console.log('current X: '+currentX);
-        console.log('Net result ' +collision(currentX, currentY, ev.currentTarget.id));
+        var result = collision(currentX, currentY, ev.currentTarget.id);
+        console.log('Net result ' +result);
+        if (result !== undefined) {
+            var $base = $('#'+ ev.currentTarget.id);
+            var $collided = $('#'+result);
+            //switch the src
+            var baseSrc = $base.attr('src');//makes a copy as prim
+            var collidedSrc = $collided.attr('src');
+            console.log(baseSrc);
+            console.log(collidedSrc);
 
+            $base.attr('src', collidedSrc);
+            $collided.attr('src', baseSrc);
+        }
     });
 
 //check for every key except yourself.
@@ -56,20 +68,8 @@ function collision(currentX, currentY, baseImage) {
             currentX > mapImage[key].left &&
             currentX < mapImage[key].right) {
 
-            return true;
+            return key;
         }
     }
-    return false;
-
-/*    console.log(currentY > mapImage['dsc_6013'].top);
-    console.log(currentY < mapImage['dsc_6013'].bottom);
-    console.log(currentX > mapImage['dsc_6013'].left);
-    console.log(currentX < mapImage['dsc_6013'].right);
-    console.log()
-
-    return (currentY > mapImage['dsc_6013'].top &&
-            currentY < mapImage['dsc_6013'].bottom &&
-            currentX > mapImage['dsc_6013'].left &&
-            currentX < mapImage['dsc_6013'].right
-    );
-*/}
+    return undefined;
+}
