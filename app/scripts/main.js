@@ -41,6 +41,38 @@ arrayImage.forEach(function(fileName) {
 
 $('img')
     .hammer(hammer_options)
+    .on('dragstart', function(ev) {
+        var clooney = $('#' + ev.currentTarget.id).clone().prop({id: 'cloned'});
+        clooney.css({
+            'position': 'absolute',
+            'top': ev.currentTarget.offsetTop + 'px',
+            'left': ev.currentTarget.offsetLeft + 'px',
+            'height': ev.currentTarget.height,
+            'width': ev.currentTarget.width
+        });
+        $('html').append(clooney);
+    })
+    .on('drag', function(ev) {
+        // need to grab 
+        var $cloned = $('#cloned');
+
+        // parse also kills PX string. SHOULD BE ORIGIN , not newly updated css
+    /*    var stagTop = parseFloat($cloned.css('top'), 10);
+        var stagLeft = parseFloat($cloned.css('left'), 10);*/
+
+        var stagTop = ev.currentTarget.offsetTop;
+        var stagLeft = ev.currentTarget.offsetLeft;
+
+        var newTop = stagTop + ev.gesture.deltaY;
+        var newLeft = stagLeft + ev.gesture.deltaX;
+
+        console.log(newTop);
+        console.log(newLeft);
+
+        $cloned.css('top', newTop + 'px');
+        $cloned.css('left', newLeft + 'px');
+
+    })
     .on('dragend', function(ev) { 
         console.log(ev);
         currentX = ev.gesture.center.pageX;
@@ -61,6 +93,8 @@ $('img')
             $base.attr('src', collidedSrc);
             $collided.attr('src', baseSrc);
         }
+
+        $('#cloned').remove();
     });
 
 //check for every key except the base comparitor.
