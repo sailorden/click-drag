@@ -13,8 +13,15 @@ var arrayImage = [
     'dsc_6417'
 ];
 var mapImage = {};
+var hammer_options = {};
+
 var currentX;
 var currentY;
+
+var $base;
+var $collided;
+var baseSrc;
+var collidedSrc;
 
 
 arrayImage.forEach(function(fileName) {
@@ -32,31 +39,31 @@ arrayImage.forEach(function(fileName) {
     };
 });
 
-var hammer_options = {};
 $('img')
     .hammer(hammer_options)
     .on('dragend', function(ev) { 
         console.log(ev);
         currentX = ev.gesture.center.pageX;
         currentY = ev.gesture.center.pageY;
-        console.log('current X: '+currentX);
         var result = collision(currentX, currentY, ev.currentTarget.id);
         console.log('Net result ' +result);
-        if (result !== undefined) {
-            var $base = $('#'+ ev.currentTarget.id);
-            var $collided = $('#'+result);
-            //switch the src
-            var baseSrc = $base.attr('src');//makes a copy as prim
-            var collidedSrc = $collided.attr('src');
-            console.log(baseSrc);
-            console.log(collidedSrc);
 
+        if (result !== undefined) {
+            // define our jQuery vars
+            $base = $('#'+ ev.currentTarget.id);
+            $collided = $('#'+result);
+
+            // save respective image sources
+            baseSrc = $base.attr('src');//makes a copy as prim
+            collidedSrc = $collided.attr('src');
+
+            // switch the image sources
             $base.attr('src', collidedSrc);
             $collided.attr('src', baseSrc);
         }
     });
 
-//check for every key except yourself.
+//check for every key except the base comparitor.
 function collision(currentX, currentY, baseImage) {
     //do this for every image we have.
     for (var key in mapImage) {
