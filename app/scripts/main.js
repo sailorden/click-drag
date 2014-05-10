@@ -14,6 +14,11 @@ var arrayImage = [
 ];
 var mapImage = {};
 var hammer_options = {};
+var hammerVars = {
+    drag: {},
+    dragStart: {},
+    dragEnd: {}
+};
 
 var currentX;
 var currentY;
@@ -42,7 +47,8 @@ arrayImage.forEach(function(fileName) {
 $('img')
     .hammer(hammer_options)
     .on('dragstart', function(ev) {
-        var clooney = $('#' + ev.currentTarget.id).clone().prop({id: 'cloned'});
+        var $base = $('#' + ev.currentTarget.id);
+        var clooney = $base.clone().prop({id: 'cloned'});
         clooney.css({
             'position': 'absolute',
             'top': ev.currentTarget.offsetTop + 'px',
@@ -50,15 +56,15 @@ $('img')
             'height': ev.currentTarget.height,
             'width': ev.currentTarget.width
         });
-        $('html').append(clooney);
+        $('html').append(clooney); // Dragend: we remove our clone
+
+        // now hide the underlaying element. Dragend: we unhide it
+        $base.css('visibility', 'hidden');
+
     })
     .on('drag', function(ev) {
-        // need to grab 
-        var $cloned = $('#cloned');
 
-        // parse also kills PX string. SHOULD BE ORIGIN , not newly updated css
-    /*    var stagTop = parseFloat($cloned.css('top'), 10);
-        var stagLeft = parseFloat($cloned.css('left'), 10);*/
+        var $cloned = $('#cloned');
 
         var stagTop = ev.currentTarget.offsetTop;
         var stagLeft = ev.currentTarget.offsetLeft;
@@ -74,6 +80,7 @@ $('img')
 
     })
     .on('dragend', function(ev) { 
+        var $base = $('#'+ ev.currentTarget.id);
         console.log(ev);
         currentX = ev.gesture.center.pageX;
         currentY = ev.gesture.center.pageY;
@@ -82,19 +89,20 @@ $('img')
 
         if (result !== undefined) {
             // define our jQuery vars
-            $base = $('#'+ ev.currentTarget.id);
+            
             $collided = $('#'+result);
 
             // save respective image sources
             baseSrc = $base.attr('src');//makes a copy as prim
             collidedSrc = $collided.attr('src');
 
-            // switch the image sources
+            // swap the image sources
             $base.attr('src', collidedSrc);
             $collided.attr('src', baseSrc);
         }
 
-        $('#cloned').remove();
+        $('#cloned').remove(); // TODO: animate back to original space
+        $base.css('visibility', 'visible');
     });
 
 //check for every key except the base comparitor.
