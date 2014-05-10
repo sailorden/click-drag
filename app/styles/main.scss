@@ -7,26 +7,16 @@ body {
     color: #333;
 }
 
-@media all and (max-width: 480px) and (min-width: 319px) {
-    .hero-unit {
-        width: 320px;
-        padding: 0;
-        border: 0;
-        margin: 0 auto;
-        img {
-            height: 70px;
-            width: 70px;
-            margin: 0 4px 0 4px;
-        }
-    }
-}
-
 .hero-unit {
+    width: 320px;
+    padding: 0;
+    border: 0;
+    margin: 0 auto;
     background-color: #eee;
-    h1 {
-        font-size: 60px;
-        line-height: 1;
-        letter-spacing: -1px;
+    img {
+        height: 70px;
+        width: 70px;
+        margin: 0 4px 0 4px;
     }
 }
 
